@@ -1,0 +1,9 @@
+#!/bin/bash
+param_length=${#1}
+dashes_string="--"
+for (( i = 0; i < ${param_length}; i++ )); do
+	dashes_string+="-"
+done
+echo "+${dashes_string}+"
+echo "| ${1} |"
+echo "+${dashes_string}+"

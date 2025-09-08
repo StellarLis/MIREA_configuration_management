@@ -1,0 +1,11 @@
+#!/bin/bash
+target_dir=$1
+cd $target_dir
+txt_files=(*.txt)
+if [ -e "${txt_files[0]}" ]; then
+    for file in "${txt_files[@]}"; do
+        if [ ! -s "$file" ]; then
+            echo "$file"
+        fi
+    done
+fi
