@@ -69,13 +69,13 @@ sudo ./reg custom_banner
 file_name=$1
 extension="${file_name##*.}"
 if [ $extension = "py" ]; then
-	if head -n 1 $file_name | grep -qE "^#"; then
+	if head -n 1 $file_name | grep -qE "#"; then
 		echo "Comment in the file has been found!"
 	else
 		echo "Comment was not found"
 	fi	
 elif [ $extension = "c" -o $extension = "js" ]; then
-	if head -n 1 $file_name | grep -qE "^//"; then
+	if head -n 1 $file_name | grep -qE "//"; then
 		echo "Comment in the file has been found!"
 	else
 		echo "Comment was not found"
