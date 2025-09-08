@@ -36,12 +36,7 @@ chmod +x custom_banner
 ```bash
 #!/bin/bash
 filename=$1
-
-cat "$filename" | \
-sed 's|//.*||' | \
-tr -c 'a-zA-Z0-9_' '\n' | \
-grep -E '^[a-zA-Z_][a-zA-Z0-9_]*$' | \
-sort -u
+grep -oE "[a-zA-Z_]+" $filename | sort -u
 ```
 Использование программы:
 ```bash
