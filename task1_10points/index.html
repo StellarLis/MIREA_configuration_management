@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <title>Main Window</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-title"><p class="terminal-user">user@terminal:~</p></div>
+        </div>
+        <div class="terminal-body" id="terminalOutput">
+            <div class="output">Добро пожаловать в эмулятор терминала!</div>
+            <div class="input-line" id="user-input-line">
+                <span class="prompt terminal-user"></span>
+                <input type="text" class="input" id="commandInput" autofocus>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

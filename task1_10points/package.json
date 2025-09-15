@@ -1,0 +1,16 @@
+{
+  "name": "gui_app",
+  "version": "1.0.0",
+  "description": "GUI Application for Configuration Management discipline",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "startWScript": "electron . --script=./scripts/startScript"
+  },
+  "author": "Andrew Kosolapov",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^38.1.0"
+  },
+  "type": "module"
+}
