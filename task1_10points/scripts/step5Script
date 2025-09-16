@@ -1,0 +1,6 @@
+mkdir new_folder
+cp main.c new_folder
+cd new_folder
+mkdir anfold
+cd unknown_folder
+cd ../

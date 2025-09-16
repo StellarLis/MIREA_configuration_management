@@ -4,31 +4,38 @@ const inputLine = document.getElementById('user-input-line')
 
 let username = ""
 let hostname = ""
-window.electronAPI.getUsernameAndHostname().then(userInfo => {
-    const terminalUsers = document.getElementsByClassName('terminal-user')
-    for (element of terminalUsers) {
-        element.innerHTML = `Эмулятор - [${userInfo.username}@${userInfo.hostname}]:~#`
-    }
-    username = userInfo.username
-    hostname = userInfo.hostname
-})
+let currentPath = ""
 
-window.electronAPI.getUpdates().then(terminalHistory => {
-    for (const commandHistory of terminalHistory) {
-        const commandLine = document.createElement('div');
-        commandLine.innerHTML = `<span class="prompt">Эмулятор - [${username}@${hostname}]:~$</span><span class="command">${commandHistory.userInput}</span>`;
-        terminalOutput.insertBefore(commandLine, inputLine);
+window.electronAPI.getCurrentPath().then(gotCurrentPath => {
+    currentPath = gotCurrentPath
+    window.electronAPI.getUsernameAndHostname().then(userInfo => {
+        const element = document.getElementById('current-prompt')
+        element.innerHTML = `[${userInfo.username}@${userInfo.hostname}]:${currentPath}#`
+        username = userInfo.username
+        hostname = userInfo.hostname
 
-        const outputDiv = document.createElement('div');
-        outputDiv.className = 'output';
-        outputDiv.innerHTML = commandHistory.output;
-        terminalOutput.insertBefore(outputDiv, inputLine);
+        window.electronAPI.getUpdates().then(terminalHistory => {
+            for (const commandHistory of terminalHistory) {
+                const commandLine = document.createElement('div');
+                commandLine.innerHTML = `<span class="prompt">[${username}@${hostname}]:${currentPath}#</span><span class="command">${commandHistory.userInput}</span>`;
+                terminalOutput.insertBefore(commandLine, inputLine);
 
-        if (commandHistory.isError) {
-            outputDiv.classList.add('error')
-        }
-        terminalOutput.scrollTop = terminalOutput.scrollHeight;
-    }
+                const outputDiv = document.createElement('div');
+                outputDiv.className = 'output';
+                outputDiv.innerHTML = commandHistory.output;
+                terminalOutput.insertBefore(outputDiv, inputLine);
+
+                if (commandHistory.isError) {
+                    outputDiv.classList.add('error')
+                }
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+                currentPath = commandHistory.currentPath
+                const element = document.getElementById('current-prompt')
+                element.innerHTML = `[${username}@${hostname}]:${currentPath}#`
+            }
+        })
+    })
 })
 
 
@@ -42,7 +49,7 @@ commandInput.addEventListener('keypress', async function(e) {
         if (command) {
             // Добавляем выполненную команду в вывод
             const commandLine = document.createElement('div');
-            commandLine.innerHTML = `<span class="prompt">Эмулятор - [${username}@${hostname}]:~$</span><span class="command">${this.value}</span>`;
+            commandLine.innerHTML = `<span class="prompt">[${username}@${hostname}]:${currentPath}#</span><span class="command">${this.value}</span>`;
             terminalOutput.insertBefore(commandLine, this.parentNode);
                     
             // Обработка команд
@@ -52,10 +59,42 @@ commandInput.addEventListener('keypress', async function(e) {
             switch(command.toLowerCase()) {
                 case 'ls':
                     result = await window.electronAPI.command_ls(args)
-                    if (result.success) output = result.value
+                    if (result.success) output = result.value.replaceAll('\n', '<br>')
+                    else {
+                        isError = true
+                        output = result.value
+                    }
                     break;
                 case 'cd':
                     result = await window.electronAPI.command_cd(args)
+                    if (!result.success) {
+                        isError = true
+                        output = result.value
+                    }
+                    currentPath = await window.electronAPI.getCurrentPath()
+                    break;
+                case 'echo':
+                    result = await window.electronAPI.command_echo(args)
+                    if (result.success) output = result.value
+                    break;
+                case 'head':
+                    result = await window.electronAPI.command_head(args)
+                    if (result.success) output = result.value
+                    else {
+                        isError = true
+                        output = result.value
+                    }
+                    break;
+                case 'cp':
+                    result = await window.electronAPI.command_cp(args)
+                    if (result.success) output = result.value
+                    else {
+                        isError = true
+                        output = result.value
+                    }
+                    break;
+                case 'mkdir':
+                    result = await window.electronAPI.command_mkdir(args)
                     if (result.success) output = result.value
                     else {
                         isError = true
@@ -83,6 +122,10 @@ commandInput.addEventListener('keypress', async function(e) {
                     
             // Прокручиваем к низу
             terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+            const element = document.getElementById('current-prompt')
+            
+            element.innerHTML = `[${username}@${hostname}]:${currentPath}#`
         }
     }
 });

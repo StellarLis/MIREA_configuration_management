@@ -1,0 +1,6 @@
+main.c,file,root,int main() {\n\tprintf("Hello World!");\n}
+subfolder,folder,root,
+test.txt,file,subfolder,Test file
+subsubfolder,folder,subfolder,
+main.py,file,subsubfolder,print('Hello World!')
+test_in_sub.txt,file,subsubfolder,Another test file

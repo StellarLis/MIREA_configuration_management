@@ -5,7 +5,10 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "startWScript": "electron . --script=./scripts/startScript"
+    "startWScript": "electron . --script=./scripts/startScript",
+    "startWVfs": "electron . --vfs=./vfs/mainVfs.csv",
+    "startAll": "electron . --vfs=./vfs/mainVfs.csv --script=./scripts/vfsScript",
+    "startStep5": "electron . --vfs=./vfs/mainVfs.csv --script=./scripts/step5Script"
   },
   "author": "Andrew Kosolapov",
   "license": "MIT",
